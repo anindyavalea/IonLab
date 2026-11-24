@@ -31,3 +31,5 @@ input[type=text],textarea,select{font:inherit;border:2px solid var(--sage);borde
 #nav{display:flex;justify-content:center;gap:8px;padding:14px;flex-wrap:wrap}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--terra);color:#fff;padding:8px 18px;border-radius:20px;display:none}
 @media(max-width:720px){#hb{display:block}.menu{display:none;flex-direction:column;flex-basis:100%}.menu.open{display:flex}.hero,.lab,.zones{grid-template-columns:1fr}h1{font-size:1.5rem}.btn,.opt,.chip{min-height:44px}}
 @media print{header,#nav,.btn,.menu{display:none}}
+#q{scroll-margin-top:140px}
+.chip:disabled{opacity:.4}
