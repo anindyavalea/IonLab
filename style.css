@@ -92,3 +92,4 @@ table{border-collapse:collapse;width:100%;font-size:.92rem}th,td{border:1px soli
     transform: translateX(0);
   }
 }
+[hidden]{display:none!important}
