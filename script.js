@@ -13,8 +13,8 @@ const beaker=(c='#ef8f7a')=>`<svg viewBox="0 0 200 180" width="100%"><path d="M5
 /* ================= QUIZ ENGINE =================
  soal = [pertanyaan, [opsi], indeksBenar, konsep(0-5), penjelasan, [hint1,hint2,hint3]] */
 function quiz(el,qs,done){let i=0,sc=0,wr=[];function go(){const q=qs[i];let h=0,first=true;
-el.innerHTML=`<small>Soal ${i+1} dari ${qs.length}</small><h3>${q[0]}</h3>${q[1].map((o,j)=>`<button class="opt" data-j="${j}">${o}</button>`).join('')}<div class="hs"></div><div class="fbk"></div><button class="btn ghost hb">💡 Petunjuk</button>`;
-const hint=()=>{const H=q[5]||[];if(h<H.length)el.querySelector('.hs').insertAdjacentHTML('beforeend',`<p class="hint"><b>Hint ${h+1}:</b> ${H[h++]}</p>`)};
+el.innerHTML=`<small>Soal ${i+1} dari ${qs.length}</small><h3>${q[0]}</h3>${q[1].map((o,j)=>`<button class="opt" data-j="${j}"><b>${'ABCDE'[j]}.</b> ${o}</button>`).join('')}<div class="hs"></div><div class="fbk"></div><button class="btn ghost hb">💡 Petunjuk</button>`;
+if(i>0)el.scrollIntoView({block:'start'});const hint=()=>{const H=q[5]||[];if(h<H.length)el.querySelector('.hs').insertAdjacentHTML('beforeend',`<p class="hint"><b>Hint ${h+1}:</b> ${H[h++]}</p>`)};
 el.querySelector('.hb').onclick=hint;
 el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const ok=+b.dataset.j==q[2],f=el.querySelector('.fbk');
 if(ok){if(first)sc++;el.querySelectorAll('.opt').forEach(x=>x.disabled=true);b.classList.add('ok');
@@ -25,7 +25,7 @@ f.innerHTML=`<div class="fb bad">${sci(0)}<div><b>Belum tepat. Coba perhatikan p
 go()}
 /* ================= DATA SOAL (edit di sini) ================= */
 const DIAG=[
-["Lampu uji tidak menyala pada suatu larutan. Kesimpulan paling tepat?",["Pasti nonelektrolit","Belum tentu: bisa elektrolit lemah/sangat encer sehingga ion terlalu sedikit","Tidak ada elektron bebas","Pasti elektrolit kuat"],1,1,"Lampu padam/sangat redup bisa karena ion sangat sedikit.",["Pikirkan: apakah hanya nonelektrolit yang membuat lampu tak tampak menyala?","Ion sedikit → arus kecil.","Elektrolit sangat encer juga bisa tampak padam."]],
+["Lampu uji tidak menyala pada suatu larutan. Kesimpulan paling tepat?",["Pasti nonelektrolit","Belum tentu: ...","Tidak ada elektron bebas","Pasti elektrolit kuat","Larutan tidak mengandung zat terlarut"],1,1,"Lampu padam/sangat redup bisa karena ion sangat sedikit.",["Pikirkan: apakah hanya nonelektrolit yang membuat lampu tak tampak menyala?","Ion sedikit → arus kecil.","Elektrolit sangat encer juga bisa tampak padam."]],
 ["Lampu A lebih terang daripada lampu B. Pernyataan yang tepat?",["A pasti lebih pekat","A punya lebih banyak ion per volume; belum tentu lebih pekat","Lampu tidak berhubungan dengan ion","B pasti nonelektrolit"],1,4,"Terang lampu bergantung jumlah ion, bukan konsentrasi saja.",["Bandingkan kekuatan elektrolit dan konsentrasi.","Elektrolit kuat bisa encer.","Yang menentukan: jumlah ion total."]],
 ["Pembawa muatan di dalam larutan elektrolit adalah...",["Elektron bebas","Ion","Molekul air","Atom netral"],1,2,"Di kawat elektron mengalir; di larutan, ion yang bergerak.",["Elektron mengalir di kawat.","Partikel bermuatan di dalam larutan?","Kation ke elektroda negatif, anion ke positif."]],
 ["NaCl padat tidak menghantarkan listrik karena...",["Tidak tersusun dari ion","Ion ada, tetapi terikat pada posisinya","Tidak ada elektron","Terlalu dingin"],1,2,"Ion pada kristal tidak bebas bergerak.",["NaCl tersusun dari Na⁺ dan Cl⁻.","Apa yang berbeda saat dilarutkan?","Kata kunci: bebas bergerak."]],
@@ -56,7 +56,7 @@ const FIN=[
 ["(Miskonsepsi) Dalam larutan, arus dibawa oleh...",["Elektron bebas","Ion bergerak","Molekul air","Atom"],1,2,"Ion yang bergerak, elektron di kawat.",["Pembawa muatan larutan?"]]];
 /* ================= DATA LARUTAN (edit di sini) =================
  t: S kuat, W lemah, N non, D air suling, T air keran | a,b: jumlah kation/anion per rumus | k:'ion' = senyawa ion */
-const SUB={NaCl:{t:'S',k:'ion',a:1,b:1,e:'NaCl(s) → Na⁺(aq) + Cl⁻(aq)  (disosiasi)'},HCl:{t:'S',a:1,b:1,e:'HCl(g) → H⁺(aq) + Cl⁻(aq)  (ionisasi)'},NaOH:{t:'S',k:'ion',a:1,b:1,e:'NaOH(s) → Na⁺(aq) + OH⁻(aq)  (disosiasi)'},'CaCl₂':{t:'S',k:'ion',a:1,b:2,e:'CaCl₂(s) → Ca²⁺(aq) + 2Cl⁻(aq)  (disosiasi)'},'CH₃COOH':{t:'W',a:1,b:1,e:'CH₃COOH(aq) ⇌ CH₃COO⁻(aq) + H⁺(aq)  (ionisasi sebagian)'},'NH₃':{t:'W',a:1,b:1,e:'NH₃(aq) + H₂O(l) ⇌ NH₄⁺(aq) + OH⁻(aq)  (ionisasi sebagian)'},glukosa:{t:'N',e:'C₆H₁₂O₆(s) → C₆H₁₂O₆(aq)  (tetap molekul, tanpa ion)'},etanol:{t:'N',e:'C₂H₅OH(l) → C₂H₅OH(aq)  (tetap molekul, tanpa ion)'},urea:{t:'N',e:'(NH₂)₂CO(s) → (NH₂)₂CO(aq)  (tetap molekul, tanpa ion)'},'air suling':{t:'D',e:'H₂O(l): ion H⁺/OH⁻ sangat sedikit'},'air keran':{t:'T',e:'Mengandung ion-ion terlarut (mis. Ca²⁺, Cl⁻, HCO₃⁻)'}};
+const SUB={NaCl:{t:'S',k:'ion',a:1,b:1,e:'NaCl(s) → Na⁺(aq) + Cl⁻(aq)  (disosiasi)'},HCl:{t:'S',a:1,b:1,e:'HCl(g) → H⁺(aq) + Cl⁻(aq)  (ionisasi)'},NaOH:{t:'S',k:'ion',a:1,b:1,e:'NaOH(s) → Na⁺(aq) + OH⁻(aq)  (disosiasi)'},'CaCl₂':{t:'S',k:'ion',a:1,b:2,e:'CaCl₂(s) → Ca²⁺(aq) + 2Cl⁻(aq)  (disosiasi)'},'CH₃COOH':{t:'W',a:1,b:1,e:'CH₃COOH(aq) ⇌ CH₃COO⁻(aq) + H⁺(aq)  (ionisasi sebagian)'},'NH₃':{t:'W',a:1,b:1,e:'NH₃(aq) + H₂O(l) ⇌ NH₄⁺(aq) + OH⁻(aq)  (ionisasi sebagian)'},glukosa:{t:'N',e:'C₆H₁₂O₆(s) → C₆H₁₂O₆(aq)  (tetap molekul, tanpa ion)'},etanol:{t:'N',e:'C₂H₅OH(l) → C₂H₅OH(aq)  (tetap molekul, tanpa ion)'},urea:{t:'N',e:'(NH₂)₂CO(s) → (NH₂)₂CO(aq)  (tetap molekul, tanpa ion)'},'air suling':{t:'D',e:'H₂O(l): ion H⁺/OH⁻ sangat sedikit'}};
 const CL={S:'S',W:'W',N:'N',D:'N',T:'W'},CLN={S:'Elektrolit kuat',W:'Elektrolit lemah',N:'Nonelektrolit'};
 /* tingkat kecerahan lampu 0-1 dari jumlah ion total */
 function lv(s,c,m){const o=SUB[s];if(m!='Larutan')return o.k&&m=='Lelehan'?1:0;
@@ -69,8 +69,10 @@ $('#bar').style.width=S.done.filter(Boolean).length/9*100+'%';
 const lk=S.cur<8&&!S.done[S.cur];
 $('#nav').innerHTML=`<button class="btn ghost" id="n0">🏠 Beranda</button><button class="btn ghost" id="np" ${S.cur?'':'disabled'}>← Tahap sebelumnya</button><button class="btn" id="nn" ${S.cur>=8?'disabled':''}>${lk?'🔒 ':''}Tahap berikutnya →</button>`;
 $('#n0').onclick=()=>go(0);$('#np').onclick=()=>go(S.cur-1);$('#nn').onclick=()=>go(S.cur+1)}
-function go(i){if(i<0||i>8)return;if(i>0&&!S.done[i-1]){toast('🔒 Selesaikan tahap '+i+' ('+NAMES[i-1]+') dulu ya');return}S.cur=i;save();render();scrollTo(0,0)}
-function render(){head();[st0,st1,st2,st3,st4,st5,st6,st7,st8][S.cur]()}
+function go(i){if(i<0||i>8)return;if(i>0&&!S.done[i-1]){toast('🔒 Selesaikan tahap '+i+' ('+NAMES[i-1]+') dulu ya');return}S.cur=i;save();render()}
+history.scrollRestoration='manual';
+const toTop=()=>{window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0};
+function render(){head();[st0,st1,st2,st3,st4,st5,st6,st7,st8][S.cur]();toTop()}
 function fin(i){S.done[i]=1;save();head()}
 /* ================= TAHAP 1 ================= */
 function st0(){app.innerHTML=`<div class="hero"><div><h1>Menyelidiki Larutan Elektrolit dan Nonelektrolit</h1><p>Mari cari tahu mengapa beberapa larutan dapat menghantarkan listrik.</p><button class="btn" id="go">Mulai Belajar</button></div>${beaker()}</div>
@@ -79,19 +81,19 @@ function st0(){app.innerHTML=`<div class="hero"><div><h1>Menyelidiki Larutan Ele
 $('#go').onclick=()=>{S.done[0]=1;save();go(1)}}
 /* ================= TAHAP 2 ================= */
 function st1(){if(S.sc.d!=null)return diagRes();app.innerHTML=`<h2>Asesmen Diagnostik</h2><p>5 soal untuk melihat konsep mana yang perlu diperkuat. Tenang, ini bukan ujian!</p><div class="card" id="q"></div>`;
-quiz($('#q'),DIAG,(sc,wr)=>{S.sc.d=sc;S.wr.d=wr;save();fin(1);diagRes()})}
+quiz($('#q'),DIAG,(sc,wr)=>{S.sc.d=sc;S.wr.d=wr;save();fin(1);render()})}
 function diagRes(){const w=[...new Set(S.wr.d)];app.innerHTML=`<div class="card"><h2>Skor diagnostik: ${S.sc.d} / 5</h2><p>${w.length?'Sepertinya kamu perlu memperhatikan kembali: <b>'+w.map(i=>SUBT[i]).join(', ')+'</b>.':'Hebat, semua konsep sudah kuat. Tetap baca materinya ya!'}</p><button class="btn" onclick="go(2)">Ke Materi →</button><button class="btn ghost" id="rt">Ulangi</button></div>`;
-$('#rt').onclick=()=>{S.sc.d=null;save();st1()}}
+$('#rt').onclick=()=>{S.sc.d=null;save();render()}}
 /* ================= TAHAP 3 ================= */
 function st2(){const n=Object.keys(S.chk).length,m=MAT[S.sub];
 app.innerHTML=`<h2>Materi</h2><p><b>Materi ${n} dari 6 selesai</b></p><div>${SUBT.map((t,i)=>`<button class="chip ${i==S.sub?'act':''}" data-i="${i}">${S.chk[i]?'✓ ':''}${i+1}. ${t}</button>`).join('')}</div>
 <div class="card"><h3>${m[0]}</h3><div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;align-items:center"><p>${m[1]}</p>${beaker(['#ef8f7a','#8fae8b','#b85c3e'][S.sub%3])}</div>
 <button class="btn ghost" id="gd">📄 Buka Materi Lengkap</button></div><div class="card"><h3>Cek Cepat</h3><div id="q"></div></div>`;
-document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{S.sub=+b.dataset.i;save();st2()});
+document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{S.sub=+b.dataset.i;save();render()});
 $('#gd').onclick=()=>window.open(googleDocsURL,'_blank');
 quiz($('#q'),[m[2]],()=>{S.chk[S.sub]=1;save();if(Object.keys(S.chk).length==6)fin(2);toast('Cek cepat selesai ✓');
 $('#q').innerHTML=`<div class="fb good">${sci(1)}<b>Subtopik selesai!</b></div>`+(S.sub<5?'<button class="btn" id="ns">Subtopik berikutnya →</button>':'');
-const x=$('#ns');if(x)x.onclick=()=>{S.sub++;save();st2()};head()})}
+const x=$('#ns');if(x)x.onclick=()=>{S.sub++;save();render()};head()})}
 /* ================= TAHAP 4 ================= */
 function st3(){const O={'Air hujan':'Air hujan murni nyaris tanpa ion, tetapi menyerap gas dan debu sehingga mengandung sedikit ion: penghantar lemah. Tangan basah tetap berisiko karena keringat dan kotoran menambah ion.','Air laut':'Air laut penuh ion Na⁺ dan Cl⁻ (hasil disosiasi garam) sehingga penghantar listrik sangat baik. Arus mudah mengalir: sangat berbahaya!','Air suling':'Air suling hampir tanpa ion sehingga daya hantarnya sangat rendah. Namun tangan basah bukan air suling: air melarutkan garam dari kulit dan kotoran sehingga menjadi larutan berion yang menghantarkan.'};
 app.innerHTML=`<h2>Apersepsi</h2><div class="card"><div style="display:flex;gap:12px;align-items:center">${sci(0).replace('❌','❓')}<p><b>Mengapa tangan basah berbahaya saat memegang alat listrik, padahal air suling hampir tidak menghantarkan listrik?</b></p></div><p>Pilih air yang kamu curigai paling berperan:</p>${Object.keys(O).map(k=>`<button class="btn ghost bc">${k}</button>`).join('')}<div id="o"></div></div>`;
@@ -134,8 +136,8 @@ x.fillStyle='#b85c3e';x.fillRect(2,5,10,200);x.fillStyle='#5f8362';x.fillRect(30
 P.forEach(p=>{if(p.f){p.x=p.bx+Math.sin(t/180+p.bx)*1.5;p.y=p.by+Math.cos(t/200+p.by)*1.5}else{p.vx+=(Math.random()-.5)*.15+(l>.05?(p.t=='ca'?-.02:p.t=='an'?.02:0):0);p.vy+=(Math.random()-.5)*.15;p.vx=Math.max(-1.2,Math.min(1.2,p.vx));p.vy=Math.max(-1.2,Math.min(1.2,p.vy));p.x+=p.vx;p.y+=p.vy;if(p.x<18||p.x>302)p.vx*=-1;if(p.y<12||p.y>198)p.vy*=-1;p.x=Math.max(16,Math.min(304,p.x))}
 x.beginPath();if(p.t=='m'){x.fillStyle='#d9a58f';x.arc(p.x,p.y,5,0,7);x.arc(p.x+6,p.y+2,4,0,7);x.fill()}
 else{x.fillStyle=p.t=='ca'?'#ef8f7a':'#8fae8b';x.arc(p.x,p.y,7,0,7);x.fill();x.fillStyle='#fff';x.fillText(p.t=='ca'?'+':'−',p.x-4,p.y+5)}});requestAnimationFrame(tick)}
-function table(){$('#tb').innerHTML=S.lab.map(r=>`<tr><td>${r.n} (${r.m})</td><td>${r.c}</td><td>${r.p?CLN[r.p]:'–'}</td><td>${r.r}</td><td>${r.p?(r.ok?'✅ Cocok':'⚠️ Beda'):'–'}</td></tr>`).join('')||'<tr><td colspan=5>Belum ada data. Pilih zat lalu klik “Uji & Catat Hasil”.</td></tr>'}
-document.querySelectorAll('.sb').forEach(c=>c.onclick=()=>{L.s=c.dataset.n;if(!SUB[L.s].k&&L.m!='Larutan'&&(L.s=='air suling'||L.s=='air keran'))L.m='Larutan';upd()});
+function table(){$('#tb').innerHTML=S.lab.filter(r=>SUB[r.s]).map(r=>`<tr><td>${r.n} (${r.m})</td><td>${r.c}</td><td>${r.p?CLN[r.p]:'–'}</td><td>${r.r}</td><td>${r.p?(r.ok?'✅ Cocok':'⚠️ Beda'):'–'}</td></tr>`).join('')||'<tr><td colspan=5>Belum ada data. Pilih zat lalu klik “Uji & Catat Hasil”.</td></tr>'}
+document.querySelectorAll('.sb').forEach(c=>c.onclick=()=>{L.s=c.dataset.n;if(!SUB[L.s].k&&L.m!='Larutan'&&(L.s=='air suling'))L.m='Larutan';upd()});
 document.querySelectorAll('.mb').forEach(c=>c.onclick=()=>{L.m=c.dataset.m;upd()});
 $('#sl').oninput=e=>{L.c=Math.pow(10,+e.target.value);upd()};
 $('#test').onclick=()=>{const o=SUB[L.s],l=lv(L.s,L.c,L.m),c=(o.t=='D'||o.t=='T')?'–':L.c.toFixed(3).replace('.',','),p=S.pred[L.s];
@@ -164,22 +166,27 @@ app.innerHTML=`<h2>Penguatan</h2><div class="card"><h3>1. Menyusun Persamaan</h3
 <div class="card"><h3>3. Larutan Misterius (konsentrasi sama)</h3><table><tr><th>Larutan</th><th>Lampu</th><th>Gelembung</th><th>Kesimpulanmu</th></tr>${[['X','Terang','Banyak'],['Y','Redup','Sedikit'],['Z','Padam','Tidak ada']].map((r,i)=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td><select class="ms" data-i="${i}"><option value="">Pilih…</option><option value="S">Elektrolit kuat</option><option value="W">Elektrolit lemah</option><option value="N">Nonelektrolit</option></select></td></tr>`).join('')}</table><button class="btn" id="mc">Periksa</button><p id="mr"></p></div>`;
 const ok=m=>`<span class="fb good" style="display:inline-flex">${sci(1).replace('width="100"','width="50"')}<b>${m}</b></span>`,no=m=>`<span class="fb bad" style="display:inline-flex">${sci(0).replace('width="100"','width="50"')}<b>${m}</b></span>`;
 function all(){S.act.e=E.every((_,i)=>S.act['e'+i]);S.act.i=IO.every((_,i)=>S.act['i'+i]);save();if(S.act.e&&S.act.i&&S.act.m)fin(7)}
-document.querySelectorAll('.eq').forEach(d=>{const i=+d.dataset.i,e=E[i];let cur=[];const bank=[...e].sort(()=>Math.random()-.5);
-function dr(){d.querySelector('.ans').textContent=cur.join(' ')||'…';d.querySelector('.bank').innerHTML=bank.map((t,k)=>`<button class="chip ${cur.includes(k)?'':''}" data-k="${k}" ${cur.idx&&cur.idx.includes(k)?'disabled':''}>${t}</button>`).join('');
-d.querySelectorAll('.bank .chip').forEach(b=>b.onclick=()=>{cur.idx=cur.idx||[];cur.push(bank[+b.dataset.k]);cur.idx.push(+b.dataset.k);dr()})}
-d.querySelector('.ck').onclick=()=>{const g=cur.join(' ')==e.join(' ');S.act['e'+i]=g;d.querySelector('.r').innerHTML=g?ok('Benar!'):no('Periksa urutan & jenis panah');all()};
-d.querySelector('.rs').onclick=()=>{cur=[];dr()};dr()});
+S.eqs=S.eqs||{};
+document.querySelectorAll('.eq').forEach(d=>{const i=+d.dataset.i,e=E[i];
+const sv=S.eqs[i]||(S.eqs[i]={cur:[],used:[],bank:[...e].sort(()=>Math.random()-.5)});
+function res(){const a=S.act['e'+i];d.querySelector('.r').innerHTML=a===true?ok('Benar!'):a===false?no('Periksa urutan & jenis panah'):''}
+function dr(){d.querySelector('.ans').textContent=sv.cur.join(' ')||'…';
+d.querySelector('.bank').innerHTML=sv.bank.map((t,k)=>`<button class="chip" data-k="${k}" ${sv.used.includes(k)?'disabled':''}>${t}</button>`).join('');
+d.querySelectorAll('.bank .chip').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;sv.cur.push(sv.bank[k]);sv.used.push(k);delete S.act['e'+i];save();res();dr()})}
+d.querySelector('.ck').onclick=()=>{S.act['e'+i]=sv.cur.join(' ')==e.join(' ');res();all()};
+d.querySelector('.rs').onclick=()=>{sv.cur=[];sv.used=[];delete S.act['e'+i];save();res();dr()};
+res();dr()});
 document.querySelectorAll('.ic').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;const g=IO[i][1].every((q,j)=>Math.abs(parseFloat(document.querySelector(`input[data-i="${i}"][data-j="${j}"]`).value.replace(',','.'))-q[1])<.001);
 S.act['i'+i]=g;b.nextElementSibling.innerHTML=g?ok('Benar!'):no('Petunjuk: kalikan M dengan koefisien ion');all()});
 $('#mc').onclick=()=>{const k=['S','W','N'],g=[...document.querySelectorAll('.ms')].every((s,i)=>s.value==k[i]);S.act.m=g;$('#mr').innerHTML=g?ok('Benar! Terang=kuat, redup=lemah, padam=non'):no('Cek lagi: terang/redup/padam dan gelembungnya');all()}}
 /* ================= TAHAP 9 ================= */
-function st8(){if(S.sc.f==null){app.innerHTML='<h2>Evaluasi Formatif (5 soal)</h2><div class="card" id="q"></div>';return quiz($('#q'),FORM,(s,w)=>{S.sc.f=s;S.wr.f=w;save();st8()})}
-if(S.sc.n==null){app.innerHTML='<h2>Evaluasi Akhir (10 soal)</h2><div class="card" id="q"></div>';return quiz($('#q'),FIN,(s,w)=>{S.sc.n=s;S.wr.n=w;save();fin(8);st8()})}
-const w=[...S.wr.d,...S.wr.f,...S.wr.n],cnt=i=>w.filter(x=>x==i).length,bad=[0,1,2,3,4,5].filter(i=>cnt(i)),good=[0,1,2,3,4,5].filter(i=>!cnt(i)),L=S.lab.filter(r=>r.p),mt=L.filter(r=>r.ok).length;
+function st8(){if(S.sc.f==null){app.innerHTML='<h2>Evaluasi Formatif (5 soal)</h2><div class="card" id="q"></div>';return quiz($('#q'),FORM,(s,w)=>{S.sc.f=s;S.wr.f=w;save();render()})}
+if(S.sc.n==null){app.innerHTML='<h2>Evaluasi Akhir (10 soal)</h2><div class="card" id="q"></div>';return quiz($('#q'),FIN,(s,w)=>{S.sc.n=s;S.wr.n=w;save();fin(8);render()})}
+const w=[...S.wr.d,...S.wr.f,...S.wr.n],cnt=i=>w.filter(x=>x==i).length,bad=[0,1,2,3,4,5].filter(i=>cnt(i)),good=[0,1,2,3,4,5].filter(i=>!cnt(i)),L=S.lab.filter(r=>r.p&&SUB[r.s]),mt=L.filter(r=>r.ok).length;
 app.innerHTML=`<div class="card"><h2>📋 LAPORAN HASIL BELAJAR</h2><table><tr><td>Progres materi</td><td>${Object.keys(S.chk).length} dari 6 selesai</td></tr><tr><td>Skor diagnostik</td><td>${S.sc.d??'–'} / 5</td></tr><tr><td>Skor formatif</td><td>${S.sc.f} / 5</td></tr><tr><td>Skor evaluasi akhir</td><td>${S.sc.n} / 10</td></tr><tr><td>Prediksi vs hasil lab</td><td>${mt} cocok dari ${L.length} pengujian berprediksi</td></tr><tr><td>Konsep paling dikuasai</td><td>${good.map(i=>SUBT[i]).join(', ')||'–'}</td></tr><tr><td>Perlu dipelajari lagi</td><td>${bad.map(i=>SUBT[i]).join(', ')||'Tidak ada, kerja bagus!'}</td></tr></table>
 <h3>Refleksi</h3><p>Apa yang paling kamu pahami, dan apa yang masih membingungkan?</p><textarea id="rf" rows="4">${S.refl}</textarea><br><button class="btn" id="pr">🖨️ Simpan / Cetak Laporan</button><button class="btn ghost" id="rt">Ulangi Evaluasi</button></div>`;
 $('#rf').oninput=e=>{S.refl=e.target.value;save()};$('#pr').onclick=()=>{S.refl=$('#rf').value;save();window.print()};
-$('#rt').onclick=()=>{S.sc.f=null;S.sc.n=null;S.wr.f=[];S.wr.n=[];save();st8()}}
+$('#rt').onclick=()=>{S.sc.f=null;S.sc.n=null;S.wr.f=[];S.wr.n=[];save();render()}}
 /* ================= MODAL: BUKU SAKU, GLOSARIUM, BANTUAN ================= */
 const POCKET=[['Konsep elektrolit','Elektrolit: larutannya menghantarkan listrik karena ada ion bebas. Nonelektrolit: tetap molekul netral.'],['Uji daya hantar','Terang+gelembung banyak = kuat; redup+sedikit = lemah; padam = non. Bandingkan pada konsentrasi sama.'],['Disosiasi, hidrasi, ionisasi','Disosiasi: senyawa ion terpisah jadi ion. Hidrasi: ion dikelilingi air. Ionisasi: molekul membentuk ion. NaCl padat tidak menghantarkan (ion terikat); leleh/larutan menghantarkan.'],['Kuat, lemah, nonelektrolit','Kuat: panah →. Lemah: ⇌ (sebagian kecil terion). Non: tidak ada ion. HCl dan NH₃ sama-sama molekuler, tetapi HCl kuat dan NH₃ lemah.'],['Konsentrasi dan kekuatan','Kekuatan = persen terion; konsentrasi = mol/L. [ion] = M × koefisien. Kuat yang sangat encer bisa redup.'],['Miskonsepsi umum','Bukan elektron yang mengalir dalam larutan; redup bukan nonelektrolit; terang bukan otomatis pekat; air suling praktis tidak menghantarkan.']];
 const GL=[['Elektrolit','Zat yang larutannya menghantarkan listrik.'],['Nonelektrolit','Zat yang larutannya tidak menghantarkan listrik; tetap berupa molekul.'],['Ion','Atom/gugus atom bermuatan listrik.'],['Disosiasi','Pemisahan senyawa ion menjadi kation dan anion.'],['Hidrasi','Pengelilingan ion oleh molekul air.'],['Ionisasi','Pembentukan ion dari senyawa molekuler dalam air.'],['Elektrolit kuat','Terion/terdisosiasi hampir sempurna; ion banyak.'],['Elektrolit lemah','Hanya sebagian kecil terionisasi; ion sedikit.'],['Konsentrasi','Banyaknya zat terlarut per volume larutan (molaritas, mol/L).'],['Daya hantar listrik','Kemampuan larutan menghantarkan arus, ditentukan jumlah ion bebas.']];
