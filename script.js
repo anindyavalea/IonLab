@@ -242,6 +242,7 @@ R[4]=()=>{const z=(k,t)=>`<div class="zone" data-z="${k}"><h4>${t}</h4></div>`;
  dnd($('#stage'),upd,'pick');upd()};
 
 /* ---------- TAHAP 6: VIRTUAL LAB ---------- */
+const NOTE_KONS=`<div class="note"><b>Ingat: terang lampu tidak hanya ditentukan kekuatan elektrolit.</b><p>Elektrolit kuat yang berkonsentrasi sangat rendah dapat menyala lebih redup daripada elektrolit lemah yang berkonsentrasi lebih tinggi. Penyebabnya, terang lampu mengikuti jumlah ion total per volume, yaitu konsentrasi × derajat ionisasi × jumlah ion per rumus.</p><p><b>Contoh (model Virtual Lab):</b> HCl 0,001 M (kuat, sangat encer) menghasilkan intensitas ±0,17, sedangkan CH₃COOH 1 M (lemah, pekat) menghasilkan ±0,45. Jadi lampu CH₃COOH 1 M lebih terang walaupun HCl tergolong elektrolit kuat.</p><p>Karena itu, bandingkan kekuatan elektrolit hanya pada konsentrasi yang sama. Lampu redup tidak otomatis berarti elektrolit lemah.</p></div>`;
 let lab={id:'NaCl',mode:'solution',v:50,on:false,ps:[],bub:[]};
 function labBuild(){const s=gs(lab.id),c=conc(lab.v),ps=[],rnd=(a,b)=>a+Math.random()*(b-a);
  const add=(k,n,fixed)=>{for(let i=0;i<n;i++)ps.push({k,x:rnd(130,390),y:rnd(90,260),vx:rnd(-.4,.4),vy:rnd(-.4,.4)})};
@@ -261,7 +262,7 @@ function labUpdate(){const s=gs(lab.id),c=s.fixed?(s.id==='Dist'?1e-5:.005):conc
  let sm=lab.mode==='solid'&&s.melt?'Ion berada pada posisi relatif tetap di kisi dan tidak bebas bergerak sebagai pembawa muatan.':lab.mode==='melt'&&s.melt?'Ion dapat bergerak bebas sehingga dapat menghantarkan listrik.':!ok?'—':s.c==='kuat'?'Proporsi ion besar; ion terhidrasi bergerak menuju elektroda berlawanan muatan.':s.c==='lemah'?'Sebagian besar masih molekul; hanya sebagian kecil terionisasi.':s.c==='tap'?'Ion terlarut dalam jumlah kecil–sedang, bergantung sumber air.':'Molekul netral; tanpa pembentukan ion berarti.';
  let sy=lab.mode==='melt'&&s.melt?s.eq.replace(/\(s\)/g,'(l)').replace(/\(aq\)/g,'(l)'):lab.mode==='solid'&&s.melt?s.nm+'(s): ion terikat dalam kisi kristal':s.eq;
  $('#macro').innerHTML=mac;$('#micro').textContent=sm+' (Jumlah partikel adalah model konseptual.)';$('#sym').textContent=ok?sy:'—';$('#utest').disabled=!ok;
- $('#expl').onclick=()=>openModal(SUBS[s.sub].t,SUBS[s.sub].h+SUBS[s.sub].more)}
+ $('#expl').onclick=()=>openModal(SUBS[s.sub].t,SUBS[s.sub].h+SUBS[s.sub].more+NOTE_KONS)}
 function labTable(){const rows=S.tests.map(t=>`<tr><td>${gs(t.id).nm}</td><td>${t.fixed?'—':fmt(t.c)+' M'} (${{solid:'padat',melt:'lelehan',solution:'larutan'}[t.mode]})</td><td>${t.pred?KLAS[t.pred]:'Belum diprediksi'}</td><td>${t.res}</td><td>${t.match==null?'—':t.match?'✓ Cocok':'✗ Beda'}</td></tr>`).join('');
  $('#ttab').innerHTML=rows||'<tr><td colspan="5">Belum ada pengujian.</td></tr>'}
 function labLoop(){const cv=$('#cv');if(!cv)return;const g=cv.getContext('2d'),s=gs(lab.id),m=model(s,conc(lab.v),lab.mode),ok=lab.mode==='solution'||s.melt,L=100,Rr=420,sp=matchMedia('(prefers-reduced-motion:reduce)').matches?.3:1;
